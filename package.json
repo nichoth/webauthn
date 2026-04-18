@@ -1,11 +1,8 @@
 {
-  "private": true,
-  "type": "module",
+  "name": "@substrate-system/webauthn",
   "version": "0.0.0",
-  "main": "dist/index.js",
-  "files": [
-    "./dist/*"
-  ],
+  "description": "Sign things with webauthn",
+  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -22,6 +19,14 @@
       ]
     }
   },
+  "main": "dist/index.js",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "files": [
+    "./dist/*"
+  ],
   "scripts": {
     "lint": "eslint \"./**/*.{ts,js}\"",
     "test": "npm run build && esbuild ./test/index.ts --bundle | tapout",
@@ -39,7 +44,6 @@
     "postversion": "git push --follow-tags && npm publish",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {},
   "devDependencies": {
     "@preact/preset-vite": "^2.10.2",
     "@substrate-system/debug": "^0.9.24",
@@ -60,6 +64,21 @@
     "typescript": "^5.9.2",
     "vite": "^7.0.6"
   },
-  "author": "nichoth <nichoth@nichoth.com> (https://nichoth.com)",
-  "license": "SEE LICENSE IN LICENSE"
+  "keywords": [
+    "webauthn",
+    "biometric",
+    "sign",
+    "signature",
+    "cryptography"
+  ],
+  "homepage": "https://github.com/nichoth/webauthn#readme",
+  "bugs": {
+    "url": "https://github.com/nichoth/webauthn/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nichoth/webauthn.git"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "nichoth <nichoth@nichoth.com> (https://nichoth.com)"
 }
