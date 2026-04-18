@@ -48,7 +48,7 @@
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "auto-changelog": "^2.4.0",
-    "esbuild": "^0.27.0",
+    "esbuild": "^0.28.0",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
     "htm": "^3.1.1",
@@ -57,8 +57,8 @@
     "preact": "^10.27.0",
     "tap-spec": "^5.0.0",
     "typedoc": "^0.28.9",
-    "typescript": "^5.9.2",
-    "vite": "^7.0.6"
+    "typescript": "^6.0.3",
+    "vite": "^8.0.8"
   },
   "author": "nichoth <nichoth@nichoth.com> (https://nichoth.com)",
   "license": "SEE LICENSE IN LICENSE"
