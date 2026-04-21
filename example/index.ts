@@ -77,6 +77,7 @@ const Example:FunctionComponent<unknown> = function () {
         batch(() => {
             state.credentialId.value = data?.id ?? null
             state.credential.value = data || null
+            state.publicKey.value = bufferToBase64(pubKey)
         })
     }, [])
 
