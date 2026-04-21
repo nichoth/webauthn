@@ -99,11 +99,9 @@ const Example:FunctionComponent<unknown> = function () {
         <h1>Webauthn Signatures</h1>
 
         <p>
-            This uses the browser's biometric authenticator to create signatures
-            of arbitrary data. We use the challenge parameter to pass in
-            arbitrary data, and we get back an assertion object containing a
-            signature over a concatenation of the authenticator data and the
-            client data JSON
+            Create signatures of arbitrary data with a biometric authenticator.
+            Pass in data via the <code>challenge</code> parameter,
+            and get back an assertion object containing a signature.
         </p>
 
         <p>
