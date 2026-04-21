@@ -60,3 +60,65 @@ button {
     font-size: 1rem;
     padding: 0.5rem 1rem;
 }
+
+/* Drag-and-drop zone */
+.drop-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border: 2px dashed #aaa;
+    border-radius: 0.5rem;
+    padding: 1.5rem 1rem;
+    margin-bottom: 1rem;
+    background-color: #fafafa;
+    color: #555;
+    transition: border-color 0.15s, background-color 0.15s;
+    min-height: 5rem;
+}
+
+.drop-zone.drag-over {
+    border-color: #555;
+    background-color: #f0f0f0;
+}
+
+.drop-zone.has-file {
+    border-style: solid;
+    border-color: #333;
+    background-color: #f5f5f5;
+    color: #333;
+    justify-content: space-between;
+}
+
+.drop-zone-or {
+    color: #aaa;
+}
+
+.drop-zone-file {
+    flex: 1;
+}
+
+.btn-file-pick {
+    cursor: pointer;
+    border: 1px solid;
+    background-color: white;
+    font-size: 0.9rem;
+    padding: 0.35rem 0.8rem;
+}
+
+.btn-remove {
+    cursor: pointer;
+    border: 1px solid #999;
+    background-color: white;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.6rem;
+    color: #555;
+}
+
+.hash-display {
+    word-break: break-all;
+    white-space: pre-wrap;
+    font-weight: bold;
+    background-color: #fffbe6;
+    border-color: #e6c200;
+}
