@@ -53,23 +53,73 @@ export async function sign (
         // 4. Trigger the browser's biometric/security key prompt
         const assertion = await navigator.credentials.get(options)
 
-        if (!assertion || !(assertion instanceof PublicKeyCredential)) {
+        if (!assertion || assertion.type !== 'public-key') {
             throw new Error('The browser did not return a Public Key Credential.')
         }
 
         // 5. Extract the response components
-        const response = assertion.response as AuthenticatorAssertionResponse
+        const response = (assertion as PublicKeyCredential)
+            .response as AuthenticatorAssertionResponse
 
         return [{
             id: assertion.id,
-            rawId: bufferToBase64(assertion.rawId),
+            rawId: bufferToBase64((assertion as PublicKeyCredential).rawId),
             signature: bufferToBase64(response.signature),
             authenticatorData: bufferToBase64(response.authenticatorData),
             clientDataJSON: bufferToBase64(response.clientDataJSON),
-        }, assertion]
+        }, assertion as PublicKeyCredential]
     } catch (error) {
         console.error('WebAuthn Signing Error:', error)
         throw error
+    }
+}
+
+/**
+ * Verify a WebAuthn signature against a public key.
+ *
+ * The signature covers `authenticatorData || SHA-256(clientDataJSON)`.
+ * The public key must be in SPKI/DER format (as returned by
+ * `AuthenticatorAttestationResponse.getPublicKey()`).
+ */
+export async function verify (
+    signature:Signature,
+    publicKeyDer:ArrayBuffer
+):Promise<boolean> {
+    try {
+        const publicKey = await window.crypto.subtle.importKey(
+            'spki',
+            publicKeyDer,
+            { name: 'ECDSA', namedCurve: 'P-256' },
+            false,
+            ['verify']
+        )
+
+        const signatureBuffer = base64ToBuffer(signature.signature)
+        const authenticatorDataBuffer = base64ToBuffer(signature.authenticatorData)
+        const clientDataJSONBuffer = base64ToBuffer(signature.clientDataJSON)
+
+        // Hash the clientDataJSON
+        const clientDataHash = await window.crypto.subtle.digest(
+            'SHA-256',
+            clientDataJSONBuffer
+        )
+
+        // The signed data is: authenticatorData || SHA-256(clientDataJSON)
+        const signedData = new Uint8Array(
+            authenticatorDataBuffer.byteLength + clientDataHash.byteLength
+        )
+        signedData.set(new Uint8Array(authenticatorDataBuffer), 0)
+        signedData.set(new Uint8Array(clientDataHash), authenticatorDataBuffer.byteLength)
+
+        return window.crypto.subtle.verify(
+            { name: 'ECDSA', hash: { name: 'SHA-256' } },
+            publicKey,
+            signatureBuffer,
+            signedData
+        )
+    } catch (error) {
+        console.error('WebAuthn Verification Error:', error)
+        return false
     }
 }
 
@@ -83,4 +133,17 @@ export function bufferToBase64 (buffer:ArrayBuffer):string {
         binary += String.fromCharCode(bytes[i])
     }
     return window.btoa(binary)
+}
+
+/**
+ * Helper to convert Base64 (standard or URL-safe) strings back to ArrayBuffer
+ */
+export function base64ToBuffer (base64:string):ArrayBuffer {
+    const normalized = base64.replace(/-/g, '+').replace(/_/g, '/')
+    const binary = window.atob(normalized)
+    const bytes = new Uint8Array(binary.length)
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i)
+    }
+    return bytes.buffer
 }
