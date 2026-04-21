@@ -53,21 +53,26 @@ export async function sign (
         // 4. Trigger the browser's biometric/security key prompt
         const assertion = await navigator.credentials.get(options)
 
-        if (!assertion || assertion.type !== 'public-key') {
+        if (
+            !assertion ||
+            assertion.type !== 'public-key' ||
+            !('rawId' in assertion) ||
+            !('response' in assertion)
+        ) {
             throw new Error('The browser did not return a Public Key Credential.')
         }
 
         // 5. Extract the response components
-        const response = (assertion as PublicKeyCredential)
-            .response as AuthenticatorAssertionResponse
+        const pkCredential = assertion as PublicKeyCredential
+        const response = pkCredential.response as AuthenticatorAssertionResponse
 
         return [{
-            id: assertion.id,
-            rawId: bufferToBase64((assertion as PublicKeyCredential).rawId),
+            id: pkCredential.id,
+            rawId: bufferToBase64(pkCredential.rawId),
             signature: bufferToBase64(response.signature),
             authenticatorData: bufferToBase64(response.authenticatorData),
             clientDataJSON: bufferToBase64(response.clientDataJSON),
-        }, assertion as PublicKeyCredential]
+        }, pkCredential]
     } catch (error) {
         console.error('WebAuthn Signing Error:', error)
         throw error

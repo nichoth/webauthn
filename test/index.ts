@@ -53,14 +53,14 @@ async function createMockWebAuthnSetup (dataToSign:string) {
     )
 
     // Generate a random credential ID
-    const credentialIdBytes = crypto.getRandomValues(new Uint8Array(32))
-    const credentialId = btoa(String.fromCharCode(...credentialIdBytes))
+    const credentialIdBuffer = crypto.getRandomValues(new Uint8Array(32))
+    const credentialId = btoa(String.fromCharCode(...credentialIdBuffer))
         .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
 
     // Assemble the mock object whose shape matches PublicKeyCredential
     const mockAssertion = {
         id: credentialId,
-        rawId: credentialIdBytes.buffer as ArrayBuffer,
+        rawId: credentialIdBuffer.buffer as ArrayBuffer,
         type: 'public-key' as const,
         response: {
             signature: signatureBuffer,
