@@ -82,7 +82,7 @@ export async function sign (
 /**
  * Verify a WebAuthn signature against a public key.
  *
- * The signature covers `authenticatorData || SHA-256(clientDataJSON)`.
+ * The signature covers `authenticatorData + SHA-256(clientDataJSON)`.
  * The public key must be in SPKI/DER format (as returned by
  * `AuthenticatorAttestationResponse.getPublicKey()`).
  */
@@ -109,11 +109,14 @@ export async function verify (
             clientDataJSONBuffer
         )
 
-        // The signed data is: authenticatorData || SHA-256(clientDataJSON)
-        const signedData = new Uint8Array(
-            authenticatorDataBuffer.byteLength + clientDataHash.byteLength
-        )
+        // signed data is: authenticatorData + SHA-256(clientDataJSON)
+        const length = (authenticatorDataBuffer.byteLength +
+            clientDataHash.byteLength)
+
+        const signedData = new Uint8Array(length)
+        // authenticator data
         signedData.set(new Uint8Array(authenticatorDataBuffer), 0)
+        // client data hash
         signedData.set(new Uint8Array(clientDataHash), authenticatorDataBuffer.byteLength)
 
         return window.crypto.subtle.verify(
